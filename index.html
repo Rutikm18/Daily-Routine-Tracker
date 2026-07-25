@@ -1,0 +1,313 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ---------------------------------------------------------------
+   COLOUR: two hues only, plus neutrals. Textbook complementary pair.
+   - Cool ocean blue (hue 200) = calm. Structure, text, everything unfinished.
+   - Warm burnt orange (hue 25, the exact opposite) = done.
+   Warm colours come forward, cool colours fall back — so a finished
+   habit literally steps toward you. 60% neutral / 30% blue / 10% orange.
+----------------------------------------------------------------*/
+:root{
+  --paper:#F2F6F8;      /* page */
+  --card:#FFFFFF;       /* cards */
+  --ink:#0F2A38;        /* main text */
+  --ink-soft:#5A7686;   /* labels, hints */
+  --line:#DEE9EF;       /* borders */
+  --sea:#0E6A8C;        /* primary blue */
+  --sea-pale:#E4F0F6;   /* blue wash */
+  --sun:#C8631F;        /* the accent — done */
+  --sun-pale:#FCEEE3;   /* orange wash */
+  --radius:14px;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:620px;margin:0 auto;padding:24px 16px 56px}
+
+/* ---------- header ---------- */
+.phase{font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--sea);background:var(--sea-pale);display:inline-block;
+  padding:5px 11px;border-radius:99px}
+h1{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:-.02em;
+  margin:14px 0 2px}
+.date{color:var(--ink-soft);font-size:14.5px;margin-bottom:18px}
+
+.bar{height:10px;background:var(--sea-pale);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--sun);border-radius:99px;
+  width:0;transition:width .35s ease}
+.barlab{display:flex;justify-content:space-between;margin-top:8px;
+  font-size:13.5px;color:var(--ink-soft)}
+.barlab b{color:var(--ink);font-weight:600}
+
+/* ---------- section label ---------- */
+h2{font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-soft);margin:30px 0 10px}
+
+/* ---------- habit rows ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden}
+.row{display:flex;align-items:center;gap:14px;width:100%;min-height:62px;
+  padding:12px 15px;background:var(--card);border:0;border-top:1px solid var(--line);
+  font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background .15s}
+.row:first-child{border-top:0}
+.row:hover{background:#F7FBFD}
+.row:focus-visible{outline:2px solid var(--sea);outline-offset:-2px}
+.row.done{background:var(--sun-pale)}
+
+.box{flex:0 0 26px;height:26px;border:2px solid #B9CEDA;border-radius:8px;
+  display:grid;place-items:center;transition:.18s}
+.box svg{width:15px;height:15px;stroke:#fff;stroke-width:3.2;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .25s .05s}
+.row.done .box{background:var(--sun);border-color:var(--sun)}
+.row.done .box svg{stroke-dashoffset:0}
+
+.txt{flex:1;min-width:0}
+.name{font-weight:500;font-size:15.5px}
+.row.done .name{color:#8A5B36}
+.hint{font-size:13px;color:var(--ink-soft);margin-top:1px}
+.streak{flex:0 0 auto;font-size:13px;font-weight:600;color:var(--sun);
+  background:var(--sun-pale);border-radius:99px;padding:3px 9px}
+.streak.zero{color:var(--ink-soft);background:#EEF3F6}
+
+/* ---------- stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:15px 14px}
+.stat b{display:block;font-family:var(--display);font-size:28px;font-weight:800;
+  line-height:1.1;letter-spacing:-.02em}
+.stat span{display:block;font-size:12px;color:var(--ink-soft);margin-top:4px}
+
+/* ---------- notes ---------- */
+textarea{width:100%;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:14px;font-family:var(--body);font-size:15px;
+  color:var(--ink);resize:vertical;min-height:92px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--sea);box-shadow:0 0 0 3px var(--sea-pale)}
+textarea::placeholder{color:#9CB2BE}
+
+/* ---------- month grid ---------- */
+.monthhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nav{background:none;border:1px solid var(--line);border-radius:8px;width:30px;height:30px;
+  color:var(--sea);cursor:pointer;font-size:15px;line-height:1}
+.nav:hover{background:var(--sea-pale)}
+.gridwrap{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px;overflow-x:auto}
+table{border-collapse:collapse}
+th.lab{position:sticky;left:0;background:var(--card);text-align:left;font-weight:500;
+  font-size:12.5px;color:var(--ink-soft);padding:0 10px 0 0;white-space:nowrap;z-index:2}
+th.d{font-size:9.5px;font-weight:500;color:#9CB2BE;padding-bottom:5px;width:17px}
+th.d.now{color:var(--sun);font-weight:600}
+.cell{width:15px;height:15px;margin:1.5px;padding:0;border:1px solid #E2ECF1;
+  border-radius:4px;background:#F7FAFC;cursor:pointer;display:block}
+.cell.on{background:var(--sun);border-color:var(--sun)}
+.cell.now{border-color:var(--sea);border-width:2px}
+.cell.future{opacity:.4;cursor:default}
+.cell:focus-visible{outline:2px solid var(--sea);outline-offset:1px}
+.legend{font-size:12.5px;color:var(--ink-soft);margin-top:10px}
+
+/* ---------- buttons ---------- */
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px}
+.tool{background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:9px 14px;font:inherit;font-size:13.5px;color:var(--sea);cursor:pointer}
+.tool:hover{background:var(--sea-pale)}
+.tool.warn{color:#A33B2A}
+.tool.warn:hover{background:#FBEBE8}
+
+@media (max-width:520px){
+  h1{font-size:25px}
+  .hint{display:none}
+  .stat b{font-size:24px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <span class="phase" id="phase">Phase 1 · Foundation</span>
+  <h1 id="day">Day 1 of 90</h1>
+  <p class="date" id="date"></p>
+
+  <div class="bar"><i id="fill"></i></div>
+  <div class="barlab"><span id="count"><b>0 of 8</b> done today</span><span id="pct">0%</span></div>
+
+  <h2>Today</h2>
+  <div class="card" id="list"></div>
+
+  <h2>Your progress</h2>
+  <div class="stats" id="stats"></div>
+
+  <h2>Tonight's note</h2>
+  <textarea id="note" placeholder="What went wrong today? What are your three jobs tomorrow?"></textarea>
+
+  <h2 class="monthhead"><span id="mname">Month</span>
+    <span><button class="nav" id="prev" aria-label="Previous month">‹</button>
+    <button class="nav" id="next" aria-label="Next month">›</button></span>
+  </h2>
+  <div class="gridwrap"><table id="grid"></table></div>
+  <p class="legend">Orange means done. Tap any past square to fix a day you forgot to mark.</p>
+
+  <div class="tools">
+    <button class="tool" id="edit">Edit habits</button>
+    <button class="tool" id="export">Save backup</button>
+    <button class="tool" id="importbtn">Load backup</button>
+    <button class="tool warn" id="reset">Start over</button>
+    <input type="file" id="importfile" accept="application/json" hidden>
+  </div>
+  <p class="legend">Your marks save automatically on this device. <b>Save backup</b> downloads a small file — load it on another device to move your data across.</p>
+</div>
+
+<script>
+const KEY='tracker:v3';
+
+const DEFAULTS=[
+  {id:'code', s:'Code', n:'Code for 2 hours',       h:'One block, phone in another room. Build, do not watch.'},
+  {id:'eng',  s:'English', n:'Speak English out loud — 20 min', h:'Record yourself, play it back. Reading does not count.'},
+  {id:'read', s:'Read', n:'Read 20 pages',          h:'Then say one thing you learned, out loud, in English.'},
+  {id:'body', s:'Train', n:'Train your body — 45 min', h:'Lift or run. This is the mental training too.'},
+  {id:'phys', s:'Physics', n:'Physics — 45 min of problems', h:'Solve five problems. Watching lectures is not physics.'},
+  {id:'ship', s:'Ship', n:'Ship one thing',         h:'A commit, a post, or a client message. Someone must see it.'},
+  {id:'clean',s:'Clean', n:'Stayed clean',          h:'The habit you are quitting stayed dead today.'},
+  {id:'rev',  s:'Review', n:'5-minute night review', h:'Write tomorrow\u2019s three jobs before you sleep.'}
+];
+const PHASES=[
+  {n:'Phase 1 · Foundation', d:'Just show up. No new goals.'},
+  {n:'Phase 2 · Income', d:'Portfolio + 5 client messages a day.'},
+  {n:'Phase 3 · Build', d:'Startup, paid for by your own skill.'}
+];
+
+let S=null, view=null, mem=null;
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>iso(new Date());
+const parse=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const shift=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return iso(d)};
+
+// Saves to the browser's localStorage — works on GitHub Pages and offline.
+// Falls back to an in-memory copy if localStorage is blocked (e.g. the Claude preview).
+function load(){
+  try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}
+  return mem;
+}
+function save(){
+  mem=S;
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+}
+const fresh=()=>({start:today(),habits:DEFAULTS.map(h=>({...h})),log:{}});
+const entry=d=>S.log[d]||(S.log[d]={done:[],note:''});
+const has=(d,id)=>(S.log[d]?.done||[]).includes(id);
+
+function toggle(d,id){
+  const e=entry(d), i=e.done.indexOf(id);
+  i>-1?e.done.splice(i,1):e.done.push(id);
+  save(); render();
+}
+function rate(a,b){let done=0,tot=0,c=a;while(c<=b){done+=(S.log[c]?.done||[]).length;tot+=S.habits.length;c=shift(c,1)}return tot?Math.round(done/tot*100):0}
+function streak(id){let d=has(today(),id)?today():shift(today(),-1),n=0;while(has(d,id)&&d>=S.start){n++;d=shift(d,-1)}return n}
+function bigStreak(){const need=Math.ceil(S.habits.length*.75);
+  let d=(S.log[today()]?.done||[]).length>=need?today():shift(today(),-1),n=0;
+  while((S.log[d]?.done||[]).length>=need&&d>=S.start){n++;d=shift(d,-1)}return n}
+
+function render(){
+  const t=today(), tot=S.habits.length, done=(S.log[t]?.done||[]).length;
+  const dn=Math.round((parse(t)-parse(S.start))/864e5)+1;
+  const p=Math.min(2,Math.floor((dn-1)/30));
+
+  document.getElementById('phase').textContent=PHASES[p].n;
+  document.getElementById('day').textContent='Day '+dn+' of 90';
+  document.getElementById('date').textContent=
+    parse(t).toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})+' · '+PHASES[p].d;
+  document.getElementById('fill').style.width=(done/tot*100)+'%';
+  document.getElementById('count').innerHTML='<b>'+done+' of '+tot+'</b> done today';
+  document.getElementById('pct').textContent=Math.round(done/tot*100)+'%';
+
+  document.getElementById('list').innerHTML=S.habits.map(h=>{
+    const on=has(t,h.id), st=streak(h.id);
+    return `<button class="row ${on?'done':''}" data-id="${h.id}">
+      <span class="box"><svg viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6.5"/></svg></span>
+      <span class="txt"><span class="name">${h.n}</span><span class="hint">${h.h||''}</span></span>
+      <span class="streak ${st?'':'zero'}">${st}d</span></button>`;
+  }).join('');
+  document.querySelectorAll('.row').forEach(b=>b.onclick=()=>toggle(t,b.dataset.id));
+
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><b>${bigStreak()}</b><span>Day streak</span></div>
+    <div class="stat"><b>${rate(shift(t,-6),t)}%</b><span>Last 7 days</span></div>
+    <div class="stat"><b>${rate(shift(t,-29),t)}%</b><span>Last 30 days</span></div>`;
+
+  const ta=document.getElementById('note');
+  if(document.activeElement!==ta) ta.value=S.log[t]?.note||'';
+  grid();
+}
+
+function grid(){
+  const t=today(), y=view.getFullYear(), m=view.getMonth(), days=new Date(y,m+1,0).getDate();
+  document.getElementById('mname').textContent=view.toLocaleDateString(undefined,{month:'long',year:'numeric'});
+  let html='<tr><th class="lab"></th>';
+  for(let d=1;d<=days;d++){const ds=iso(new Date(y,m,d));html+=`<th class="d ${ds===t?'now':''}">${d}</th>`}
+  html+='</tr>';
+  html+=S.habits.map(h=>{
+    let r=`<tr><th class="lab">${h.s}</th>`;
+    for(let d=1;d<=days;d++){
+      const ds=iso(new Date(y,m,d));
+      r+=`<td><button class="cell ${has(ds,h.id)?'on':''} ${ds>t?'future':''} ${ds===t?'now':''}"
+        data-d="${ds}" data-id="${h.id}" aria-label="${h.s} on ${ds}" ${ds>t?'disabled':''}></button></td>`;
+    }
+    return r+'</tr>';
+  }).join('');
+  document.getElementById('grid').innerHTML=html;
+  document.querySelectorAll('.cell:not(.future)').forEach(c=>c.onclick=()=>toggle(c.dataset.d,c.dataset.id));
+}
+
+document.getElementById('note').oninput=e=>{entry(today()).note=e.target.value;save()};
+document.getElementById('prev').onclick=()=>{view.setMonth(view.getMonth()-1);grid()};
+document.getElementById('next').onclick=()=>{view.setMonth(view.getMonth()+1);grid()};
+document.getElementById('edit').onclick=()=>{
+  const out=prompt('One habit per line. Keep it to eight — more habits is not more progress.',
+    S.habits.map(h=>h.n).join('\n'));
+  if(out===null)return;
+  const lines=out.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,10);
+  S.habits=lines.map((n,i)=>{
+    const old=S.habits[i];
+    return {id:old?.id||'h'+i+Date.now(), n,
+      s:(old&&old.n===n)?old.s:n.split(' ').slice(0,1).join(' '),
+      h:(old&&old.n===n)?old.h:''};
+  });
+  save();render();
+};
+document.getElementById('reset').onclick=()=>{
+  if(confirm('Erase every mark and start the 90 days again from today?')){S=fresh();save();render()}
+};
+
+// ---- backup: simple JSON file you can save and re-load on another device ----
+document.getElementById('export').onclick=()=>{
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='habit-backup-'+today()+'.json';
+  a.click();
+};
+document.getElementById('importbtn').onclick=()=>document.getElementById('importfile').click();
+document.getElementById('importfile').onchange=e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      if(!data.habits||!data.log)throw 0;
+      if(confirm('Load this backup? It replaces everything currently saved here.')){
+        S=data; save(); render();
+      }
+    }catch(err){alert('That file is not a valid backup.')}
+  };
+  r.readAsText(f);
+};
+
+(function(){
+  S=load()||fresh();
+  if(!S.habits?.length)S.habits=DEFAULTS.map(h=>({...h}));
+  view=new Date(); save(); render();
+})();
+</script>
